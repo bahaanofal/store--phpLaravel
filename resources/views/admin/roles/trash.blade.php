@@ -2,15 +2,15 @@
 
 @section('title')
     <div class="d-flex">
-        <h2>Trashed Products</h2>
+        <h2>Trashed Roles</h2>
     </div>
 @endsection
 
 @section('breadcrumb')
     <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item"><a href="#">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('products.index') }}">Products</a></li>
-        <li class="breadcrumb-item active">Trashed Products</li>
+        <li class="breadcrumb-item"><a href="{{ route('roles.index') }}">Roles</a></li>
+        <li class="breadcrumb-item active">Trashed Roles</li>
     </ol>
 @endsection
 
@@ -19,12 +19,12 @@
     <x-alert />
 
     <div class="d-flex justify-content-between mb-2">
-        <form action="{{ route('products.restore') }}" method="post">
+        <form action="{{ route('roles.restore') }}" method="post">
             @csrf
             @method('put')
             <button class="btn btn-sm btn-warning" type="submit">Restore All</button>
         </form>
-        <form action="{{ route('products.force-delete') }}" method="post">
+        <form action="{{ route('roles.force-delete') }}" method="post">
             @csrf
             @method('delete')
             <button class="btn btn-sm btn-danger" type="submit">Empty Trash</button>
@@ -46,30 +46,28 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($products as $product)
+            @foreach ($roles as $role)
             <tr>
-                <td><img src="{{ asset('storage/' . $product->image_path) }}" width="60" alt=""></td>
-                <td>{{ $product->name }}</td>
-                <td>{{ $product->category_name }}</td>
-                <td>{{ $product->price }} $</td>
-                <td>{{ $product->quantity }}</td>
-                <td>{{ $product->status }}</td>
-                <td>{{ $product->deleted_at }}</td>
+                <td><img src="{{ asset('storage/' . $role->image_path) }}" width="60" alt=""></td>
+                <td>{{ $role->name }}</td>
+                <td>{{ $role->category_name }}</td>
+                <td>{{ $role->price }} $</td>
+                <td>{{ $role->quantity }}</td>
+                <td>{{ $role->status }}</td>
+                <td>{{ $role->deleted_at }}</td>
                 <td>
-                    <form action="{{ route('products.restore', $product->id) }}" method="post">
+                    <form action="{{ route('roles.restore', $role->id) }}" method="post">
                         @csrf
                         @method('put')
                         <button class="btn btn-sm btn-warning" type="submit">Restore</button>
                     </form>
                 </td>
                 <td>
-                    @can('force-delete', $product)
-                    <form action="{{ route('products.force-delete', $product->id) }}" method="post">
+                    <form action="{{ route('roles.force-delete', $role->id) }}" method="post">
                         @csrf
                         @method('delete')
                         <button class="btn btn-sm btn-danger" type="submit">Delete Forever</button>
                     </form>
-                    @endcan
                 </td>
             </tr>
             @endforeach
@@ -78,6 +76,6 @@
         </tbody>
     </table>
 
-{{ $products->links() }}
+{{ $roles->links() }}
 
 @endsection

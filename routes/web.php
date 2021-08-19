@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CategoriesController;
 use App\Http\Controllers\Admin\ProductsController;
+use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,4 +41,7 @@ Route::get('/admin/products/trash', [ProductsController::class, 'trash'])->name(
 Route::put('/admin/products/trash/{id?}', [ProductsController::class, 'restore'])->name('products.restore');
 Route::delete('/admin/products/trash/{id?}', [ProductsController::class, 'forceDelete'])->name('products.force-delete');
 // هادا الراوت بعطيني نفس ال7 أسطر اللي فوق
-Route::resource('/admin/products', ProductsController::class)->middleware('auth');
+Route::resource('/admin/products', ProductsController::class)->middleware(['auth', 'password.confirm']);
+
+
+Route::resource('/admin/roles', RolesController::class)->middleware('auth');

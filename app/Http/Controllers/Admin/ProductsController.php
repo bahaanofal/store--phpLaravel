@@ -18,6 +18,8 @@ class ProductsController extends Controller
      */
     public function index()
     {
+        $this->authorize('view-any', Product::class);
+
         $products = Product::join('categories', 'categories.id', '=', 'products.category_id')
             ->select(['products.*', 'categories.name as category_name'])
             ->orderBy('products.created_at', 'DESC')
@@ -38,6 +40,8 @@ class ProductsController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Product::class);
+        
         // value => $name , key => $id بترجع مصفوفة 
         $categories = Category::pluck('name', 'id');
         return view('admin.products.create', [
@@ -54,6 +58,8 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Product::class);
+
         $request->validate(Product::validateRules());
 
         // ضفتها في المودل
@@ -75,6 +81,9 @@ class ProductsController extends Controller
     public function show($id)
     {
         $product = Product::findOrFail($id);
+        
+        $this->authorize('view', $product);
+        
         return view('admin.products.show', compact('product'));
     }
 
@@ -87,6 +96,9 @@ class ProductsController extends Controller
     public function edit($id)
     {
         $product = Product::withTrashed()->findOrFail($id);
+        
+        $this->authorize('update', $product);
+
         return view('admin.products.edit', [
             'product' => $product,
             'categories' => Category::pluck('name', 'id')
@@ -102,8 +114,9 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
         $request->validate(Product::validateRules());
-
+        
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $image_path = $file->store('uploads', [
@@ -116,6 +129,8 @@ class ProductsController extends Controller
         
         $product = Product::findOrFail($id);
 
+        $this->authorize('update', $product);
+        
         $product->update($request->all());
 
         return redirect()->route('products.index')->with('success', 'product ( ' . $product->name . ' ) was Updated.');
@@ -130,6 +145,9 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
+        
+        $this->authorize('delete', $product);
+
         $product->delete();
 
         // يعني ممكن أرجع الصورة softDeletes لحذف الصورة عند حذف المنتج، ما بحذف الصورة عشان استخدمت ال
