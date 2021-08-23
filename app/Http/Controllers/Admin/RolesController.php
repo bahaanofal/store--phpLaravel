@@ -65,7 +65,9 @@ class RolesController extends Controller
      */
     public function show($id)
     {
-        //
+        // $roles = Role::withCount('users')->get();
+        $role = Role::findOrFail($id);
+        return $role->users;
     }
 
     /**

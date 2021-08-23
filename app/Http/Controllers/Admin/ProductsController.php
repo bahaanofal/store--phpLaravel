@@ -20,8 +20,9 @@ class ProductsController extends Controller
     {
         $this->authorize('view-any', Product::class);
 
-        $products = Product::join('categories', 'categories.id', '=', 'products.category_id')
-            ->select(['products.*', 'categories.name as category_name'])
+        $products = Product::with('category.parent')
+            // join('categories', 'categories.id', '=', 'products.category_id')
+            // ->select(['products.*', 'categories.name as category_name'])
             ->orderBy('products.created_at', 'DESC')
             ->orderBy('products.name', 'ASC')
             ->paginate();
@@ -81,6 +82,9 @@ class ProductsController extends Controller
     public function show($id)
     {
         $product = Product::findOrFail($id);
+
+        // SELECT * FROM ratings WHERE rateable_id = 1 AND rateable_type = 'App\Model\Product'
+        return $product->ratings;
         
         $this->authorize('view', $product);
         

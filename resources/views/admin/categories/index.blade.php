@@ -26,7 +26,7 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Slug</th>
-                <th>Parent Id</th>
+                <th>products count</th>
                 <th>Status</th>
                 <th>Created At</th>
                 <th>Edit</th>
@@ -40,7 +40,7 @@
                     <td>{{ $category->id }}</td>
                     <td>{{ $category->original_name }}</td>
                     <td>{{ $category->slug }}</td>
-                    <td>{{ $category->parent_name }}</td>
+                    <td>{{ $category->products_count }}</td>
                     <td>{{ $category->status }}</td>
                     <td>{{ $category->created_at }}</td>
                     <td><a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-dark">edit</a></td>

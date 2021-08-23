@@ -35,14 +35,26 @@ class CategoriesController extends Controller
             WHERE status = 'active'
             ORDER BY created_at DESC, name ASC
         */
+
+
         // return collection of Category model object
-        $entries = Category::leftJoin('categories as parents', 'parents.id', '=', 'categories.parent_id') // categories as parents // لأنه الجدول بأشر على نفسه بالمفتاح الأجنبي
+        // هادا الي كنت شغال عليه قبل العلاقات
+        /* $entries = Category::leftJoin('categories as parents', 'parents.id', '=', 'categories.parent_id') // categories as parents // لأنه الجدول بأشر على نفسه بالمفتاح الأجنبي
             ->select(['categories.*', 'parents.name as parent_name'])
             // ->where('categories.status', '=', 'active')
             ->orderBy('categories.created_at', 'DESC')
             ->orderBy('name', 'ASC')
             ->withTrashed()
             ->get();
+        */
+
+        $entries = Category::with('parent')
+            ->withCount('products')
+            /*->has('parent')
+            ->whereHas('products', function($query){
+                $query->where('price', '>', 150);
+            })*/
+            ->paginate();
 
 
         /* $categories = new ArrayObject([]); // عبارة عن مصفوفة على شكل كائن
@@ -165,9 +177,19 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Category $category)
     {
         // وبنعرض بيانات الفئة أو المنتج حسب العنصر view بنعمل صفحة  
+        
+        return $category->load([
+            'parent',
+            'products' => function($query){
+                $query->orderBy('price', 'DESC');
+            }
+        ]);
+
+
+        return $category->products()->orderBy('price', 'DESC')->get();
     }
 
     /**

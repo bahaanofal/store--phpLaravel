@@ -90,4 +90,19 @@ class Product extends Model
         $this->attributes['name'] = Str::title($value);
         $this->attributes['slug'] = Str::slug($value);
     }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id')->withDefault();
+    }
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class)->withDefault();
+    }
+
+    public function ratings()
+    {
+        return $this->morphMany(Rating::class, 'rateable', 'rateable_type', 'rateable_id', 'id');
+    }
 }
