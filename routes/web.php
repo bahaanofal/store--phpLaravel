@@ -29,30 +29,40 @@ Route::get('/dashboard', function () {
 require __DIR__.'/auth.php';
 
 
-
-// standard طريقة استخدام وتسمية الراوت هذه هي المتبعة في أساس لارافيل
-Route::get('/admin/categories', [CategoriesController::class, 'index'])->name('categories.index');
-Route::get('/admin/categories/create', [CategoriesController::class, 'create'])->name('categories.create');
-Route::post('/admin/categories', [CategoriesController::class, 'store'])->name('categories.store');
-Route::get('/admin/categories/{category}', [CategoriesController::class, 'show'])->name('categories.show');
-Route::get('/admin/categories/{category_id}/edit', [CategoriesController::class, 'edit'])->name('categories.edit');
-Route::put('/admin/categories/{category_id}', [CategoriesController::class, 'update'])->name('categories.update');
-Route::delete('/admin/categories/{category_id}', [CategoriesController::class, 'destroy'])->name('categories.destroy');
+Route::prefix('admin')->middleware(['auth', 'auth.type:admin,super-admin'])->group(function(){
 
 
-Route::get('/admin/products/trash', [ProductsController::class, 'trash'])->name('products.trash');
-Route::put('/admin/products/trash/{id?}', [ProductsController::class, 'restore'])->name('products.restore');
-Route::delete('/admin/products/trash/{id?}', [ProductsController::class, 'forceDelete'])->name('products.force-delete');
-// هادا الراوت بعطيني نفس ال7 أسطر اللي فوق
-Route::resource('/admin/products', ProductsController::class)->middleware(['auth', 'password.confirm']);
+    Route::group([
+        'prefix' => '/categories',
+        'as' => 'categories.'
+    ],function(){
+        // standard طريقة استخدام وتسمية الراوت هذه هي المتبعة في أساس لارافيل
+        Route::get('/', [CategoriesController::class, 'index'])->name('index');
+        Route::get('/create', [CategoriesController::class, 'create'])->name('create');
+        Route::post('', [CategoriesController::class, 'store'])->name('store');
+        Route::get('/{category}', [CategoriesController::class, 'show'])->name('show');
+        Route::get('/{category_id}/edit', [CategoriesController::class, 'edit'])->name('edit');
+        Route::put('/{category_id}', [CategoriesController::class, 'update'])->name('update');
+        Route::delete('/{category_id}', [CategoriesController::class, 'destroy'])->name('destroy');
+    });
+    
+    
+    Route::get('/products/trash', [ProductsController::class, 'trash'])->name('products.trash');
+    Route::put('/products/trash/{id?}', [ProductsController::class, 'restore'])->name('products.restore');
+    Route::delete('/products/trash/{id?}', [ProductsController::class, 'forceDelete'])->name('products.force-delete');
+    // هادا الراوت بعطيني نفس ال7 أسطر اللي فوق
+    Route::resource('/products', ProductsController::class)->middleware(['password.confirm']);
+    
+    
+    Route::resource('/roles', RolesController::class);
+    
+    Route::get('/get-users-addresses', [HomeController::class, 'getUsersAddresses']);
+    
+    Route::resource('/countries', CountriesController::class);
 
+    Route::get('/profiles/{profile}', [ProfileController::class, 'show']);
 
-Route::resource('/admin/roles', RolesController::class)->middleware('auth');
+});
 
-Route::get('admin/get-users-addresses', [HomeController::class, 'getUsersAddresses']);
-
-Route::resource('/admin/countries', CountriesController::class)->middleware('auth');
 
 Route::post('/ratings/{type}', [RatingController::class, 'store'])->where('type', 'profile|product');
-
-Route::get('/admin/profiles/{profile}', [ProfileController::class, 'show']);

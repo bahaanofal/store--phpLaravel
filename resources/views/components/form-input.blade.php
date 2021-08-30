@@ -1,5 +1,5 @@
 @if(isset($label))
-    <label for="{{ $id ?? $name }}">{{ $label }}</label>
+    <label for="{{ $id ?? $name }}">{{ __($label) }}</label>
 @endif
     <input type="{{ $type ?? 'text' }}" 
             class="form-control @error($name) is-invalid @enderror" 

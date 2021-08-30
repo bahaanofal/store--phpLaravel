@@ -23,14 +23,14 @@
         <thead class="table-dark">
             <tr>
                 <th>$loop</th>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Slug</th>
-                <th>products count</th>
-                <th>Status</th>
+                <th>{{ __('ID')}}</th>
+                <th>{{ __('Name') }}</th>
+                <th>{{ __('Slug') }}</th>
+                <th>{{ __('products count') }}</th>
+                <th>{{ __('Status') }}</th>
                 <th>Created At</th>
-                <th>Edit</th>
-                <th>Delete</th>
+                <th>{{ __('Edit') }}</th>
+                <th>{{ __('Delete') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -43,12 +43,12 @@
                     <td>{{ $category->products_count }}</td>
                     <td>{{ $category->status }}</td>
                     <td>{{ $category->created_at }}</td>
-                    <td><a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-dark">edit</a></td>
+                    <td><a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-dark">{{ __('Edit') }}</a></td>
                     <td>
                         <form action="{{ route('categories.destroy', $category->id) }}" method="post">
                             @csrf
                             @method('delete')
-                            <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                            <button class="btn btn-sm btn-danger" type="submit">{{ __('Delete') }}</button>
                         </form>
                 </td>
                 </tr>
