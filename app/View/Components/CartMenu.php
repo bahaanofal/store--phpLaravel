@@ -2,25 +2,20 @@
 
 namespace App\View\Components;
 
-use App\Models\Product;
+use App\Repositories\Cart\CartRepository;
 use Illuminate\View\Component;
 
-class LatestProducts extends Component
+class CartMenu extends Component
 {
-    public $products;
-
+    public $cart;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($count = 10)
+    public function __construct(CartRepository $cart)
     {
-        $this->products = Product::latest()
-        ->active()
-        ->price(100)
-        ->limit($count)
-        ->get();
+        $this->cart = $cart;
     }
 
     /**
@@ -30,6 +25,6 @@ class LatestProducts extends Component
      */
     public function render()
     {
-        return view('components.latest-products');
+        return view('components.cart-menu');
     }
 }

@@ -11,12 +11,17 @@ class ProductsController extends Controller
 
     public function index()
     {
-        return Product::active()->price(200, 500)->paginate();
+        // $products = Product::active()->price(200, 500)->paginate();
+        $products = Product::active()->paginate();
+        return view('front.products.index', compact('products'));
     }
     
-    public function show($id)
+    public function show($slug)
     {
-        return Product::findOrFail($id);
+        $product = Product::where('slug', '=', $slug)->firstOrFail();
+        return view('front.products.show', [
+            'product' => $product,
+        ]);
     }
 
 

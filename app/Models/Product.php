@@ -23,6 +23,10 @@ class Product extends Model
          'quantity', 'sku', 'width', 'height', 'length', 'weight', 'status'
     ];
 
+    protected $appends = [
+        'image_url', 'formatted_price', 'permalink'
+    ];
+
 
     // Global Scope
     protected static function booted()
@@ -39,9 +43,12 @@ class Product extends Model
         $builder->where('status', '=', 'active');
     }
     
-    public function scopePrice(Builder $builder, $from, $to)
+    public function scopePrice(Builder $builder, $from, $to = null)
     {
-        $builder->where('price', '>=', $from)->where('price', '<=', $to);
+        $builder->where('price', '>=', $from);
+        if ($to !== null) {
+            $builder->where('price', '<=', $to);
+        }
     }
 
     // Validation Rules
@@ -82,6 +89,10 @@ class Product extends Model
     {
         $formatter = new NumberFormatter(App::getLocale(), NumberFormatter::CURRENCY);
         return $formatter->formatCurrency($this->price, 'USD');
+    }
+
+    public function getPermalinkAttribute() {
+        return route('product.details', $this->slug);
     }
 
     // Mutator
